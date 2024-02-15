@@ -1,5 +1,13 @@
 let operators = ['+', '-', '*', '/'] 
- 
+
+let backspaceCharacter = "⌫"
+
+function round(number, numberOfDecimals) {
+  if ( !Number(number) ) return number
+
+  return number.toFixed(numberOfDecimals)
+}
+
 function add(a, b) {
   return Number( a ) + Number( b )
 }
@@ -13,10 +21,14 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
+  if ( Number(b) === 0 ) { return snarkyMessage() }
+
   return Number( a ) / Number( b )
 }
 
 function operate(a, operator, b) {
+  if (!b) return a
+
   switch(operator) {
     case '+':
       return add(a, b)
@@ -33,9 +45,17 @@ function operate(a, operator, b) {
   }
 }
 
+function isOperator(string) {
+  return operators.includes(string)  
+}
+
+function snarkyMessage() {
+  return "A snarky message :smirk:"
+}
+
 let buttonContainer = document.querySelector('.button-container')
 let calculationDisplay = document.querySelector('.calculation-display')
-let calculationDisplayValue = calculationDisplay.value
+let calculationDisplayValue = String(  calculationDisplay.value )
 
 const inputButtonValueHandler = event => { 
   let button = event.target
@@ -47,10 +67,26 @@ const inputButtonValueHandler = event => {
   switch(buttonValue) {
     case 'AC':
       calculationDisplayValue = ''
+      calculationDisplay.value = String(  calculationDisplayValue )
+      break
+    case '⌫':
+      calculationDisplayValue = calculationDisplayValue.slice(0, -1)
       calculationDisplay.value = calculationDisplayValue
       break
-    case '=':
+    default:
+      if ( calculationDisplayValue === snarkyMessage() ) {
+        calculationDisplayValue = ''
+        calculationDisplay.value = calculationDisplayValue
+      }
+
       let splitDisplayValue = calculationDisplayValue.split('')
+      let foundDots = splitDisplayValue.filter(
+        char => char === '.'
+      )
+      let foundDot = foundDots[0]
+
+      if (foundDot && buttonValue === '.') return
+
       let foundOperators = splitDisplayValue.filter(
         char => operators.includes(char)
       )
@@ -59,15 +95,16 @@ const inputButtonValueHandler = event => {
       firstNumber = calculationDisplayValue.split(operator)[0]
       secondNumber = calculationDisplayValue.split(operator)[1]
 
-      calculationDisplayValue = operate(firstNumber, operator, secondNumber)
-      calculationDisplay.value = calculationDisplayValue
-      break
-    default:
-      calculationDisplayValue += button.textContent
-      calculationDisplay.value = calculationDisplayValue
-  }
+      if ( secondNumber && (isOperator(buttonValue) || buttonValue === '=') ) {
+        let numberOfDecimals = 2
+  
+        calculationDisplayValue = String( round( operate(firstNumber, operator, secondNumber), numberOfDecimals ) )
+        calculationDisplay.value = String(  calculationDisplayValue )
+      }
 
-  console.log( calculationDisplayValue )
+      if (buttonValue !== '=') calculationDisplayValue += button.textContent
+      calculationDisplay.value = String( calculationDisplayValue ) 
+  }
 }
 
 buttonContainer.addEventListener('click', inputButtonValueHandler)
