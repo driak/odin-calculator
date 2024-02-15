@@ -90,7 +90,7 @@ const inputButtonValueHandler = event => {
       if (foundDot && buttonValue === '.') return
 
       let foundOperators = splitDisplayValue.filter(
-        char => operators.includes(char)
+        char => operators.includes(char) && char !== splitDisplayValue[0]
       )
 
       operator = foundOperators[0]
