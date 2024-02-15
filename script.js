@@ -3,7 +3,7 @@ let operators = ['+', '-', '*', '/']
 let backspaceCharacter = "⌫"
 
 function round(number, numberOfDecimals) {
-  if ( !Number(number) ) return number
+  if ( !Number(number) || Number.isInteger(number) ) return number
 
   return number.toFixed(numberOfDecimals)
 }
