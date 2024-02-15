@@ -74,6 +74,8 @@ const inputButtonValueHandler = event => {
       calculationDisplay.value = calculationDisplayValue
       break
     default:
+      if ( isOperator( buttonValue ) 
+        && isOperator( calculationDisplayValue[calculationDisplayValue.length - 1] ) ) return
       if ( calculationDisplayValue === snarkyMessage() ) {
         calculationDisplayValue = ''
         calculationDisplay.value = calculationDisplayValue
