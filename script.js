@@ -1,7 +1,5 @@
 let operators = ['+', '-', '*', '/'] 
 
-let backspaceCharacter = "⌫"
-
 function round(number, numberOfDecimals) {
   if ( !Number(number) || Number.isInteger(number) ) return number
 
@@ -62,7 +60,7 @@ const inputButtonValueHandler = event => {
   let buttonValue = button.textContent
   let firstNumber, secondNumber, operator
 
-  if (event.target.tagName.toLowerCase() !== 'button') { return }
+  if (event.target.tagName.toLowerCase() !== 'button') return 
   
   switch(buttonValue) {
     case 'AC':
@@ -90,18 +88,26 @@ const inputButtonValueHandler = event => {
       if (foundDot && buttonValue === '.') return
 
       let foundOperators = splitDisplayValue.filter(
-        char => operators.includes(char) && char !== splitDisplayValue[0]
-      )
+        ( char, index ) => { 
+          return operators.includes(char) && index !== 0
+        })
 
       operator = foundOperators[0]
-      firstNumber = calculationDisplayValue.split(operator)[0]
-      secondNumber = calculationDisplayValue.split(operator)[1]
 
-      if ( secondNumber && (isOperator(buttonValue) || buttonValue === '=') ) {
-        let numberOfDecimals = 2
-  
-        calculationDisplayValue = String( round( operate(firstNumber, operator, secondNumber), numberOfDecimals ) )
-        calculationDisplay.value = String(  calculationDisplayValue )
+      if (operator) {
+        let splitAtOperator = calculationDisplayValue.slice(1)
+                                                     .split(operator)
+        splitAtOperator[0] = operator + splitAtOperator[0]
+
+        firstNumber = splitAtOperator[0]
+        secondNumber = splitAtOperator[1]
+
+        if ( secondNumber && (isOperator(buttonValue) || buttonValue === '=') ) {
+          let numberOfDecimals = 2
+
+          calculationDisplayValue = String( round( operate(firstNumber, operator, secondNumber), numberOfDecimals ) )
+          calculationDisplay.value = String(  calculationDisplayValue )
+        }
       }
 
       if (buttonValue !== '=') calculationDisplayValue += button.textContent
