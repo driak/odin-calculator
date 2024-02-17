@@ -53,7 +53,6 @@ function Expression(firstNumberSign = '+',
     this.firstNumber = undefined
     this.operator = undefined 
     this.secondNumber = undefined 
-    this.lastInput = undefined
     this.isEvaluable = false
   } 
   this.deleteLastInput = (lastInput) => {
@@ -86,6 +85,7 @@ function Expression(firstNumberSign = '+',
   }
   this.toString = () => {
     let sign, firstNumber, operator, secondNumber
+
     this.firstNumberSign === '+' ? sign = '' : sign = this.firstNumberSign 
     firstNumber = this.firstNumber || ''
     operator = this.operator || ''
@@ -94,8 +94,6 @@ function Expression(firstNumberSign = '+',
     return `${sign}${firstNumber}${operator}${secondNumber}`
   }
   this.addInput = input => {
-    this.lastInput = input
-
     if ( !this.firstNumber && this.isSign(input) ) {
       this.firstNumberSign = input  
     } else if ( this.firstNumber && !this.operator
@@ -145,11 +143,6 @@ let calculationDisplay = document.querySelector('.calculation-display')
 let calculationDisplayValue = String(  calculationDisplay.value )
 let splitDisplayValue = calculationDisplayValue.split('')
 
-function areConsecutiveOperatorsAtEnd(buttonValue, displayValue) {
-  return calculator.isOperator( buttonValue ) 
-        && calculator.isOperator( displayValue[displayValue.length - 1] )  
-}
-
 function isSnarkyMessage(displayValue) {
   return displayValue === calculator.snarkyMessage 
 }
@@ -173,7 +166,6 @@ function isButtonTrigger(event) {
 const inputButtonValueHandler = event => { 
   let button = event.target
   let buttonValue = button.textContent
-  let firstNumber, secondNumber, operator
 
   if ( !isButtonTrigger(event) ) return 
   
