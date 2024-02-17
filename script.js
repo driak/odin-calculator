@@ -125,9 +125,9 @@ function Expression(firstNumberSign = '+',
       this.secondNumber = String(this.secondNumber) + input 
 
       this.isEvaluable = true
-    } else if (!this.secondNumber
-             && input === '.') {
-      let secondNumber = this.secondNumber ? this.secondNumber : ''
+    } else if (input === '.') {
+      let secondNumber = this.secondNumber || ''
+
       if ( secondNumber.split('').filter( char => char === '.').length === 0 ) {
         this.secondNumber = String(secondNumber + input)
       }
