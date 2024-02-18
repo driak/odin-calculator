@@ -110,6 +110,8 @@ function Expression(firstNumberSign = '+',
     } else if ( this.firstNumber
             && calculator.isOperator(input) && !calculator.isMinusOperator(input) )  {
       this.operator = input
+    } else if (this.isEvaluable && calculator.isOperator(input) ) {
+      this.operator = input 
     } else if ( this.firstNumber && !this.operator && calculator.isMinusOperator(input) )  {
       this.operator = input
     } else if (this.operator && !this.secondNumber 
@@ -164,30 +166,26 @@ function isButtonTrigger(event) {
 }
 
 function updateDisplay(buttonValue) {
-
-  console.log(buttonValue)
-
   switch(buttonValue) {
-    case 'AC', 'Delete':
+    case 'AC':
+    case 'Delete':
       expression.clear()
       clearDisplay()
       break
-    case '⌫', 'Backspace':
+    case '⌫':
+    case 'Backspace':
       deleteLastCharacter()
       break
     default:
       if ( isSnarkyMessage(calculationDisplayValue) ) clearDisplay() 
 
-      expression.addInput(buttonValue)
-
       if ( expression.isEvaluable
         && ( buttonValue === '='|| buttonValue === 'Enter' || calculator.isOperator(buttonValue) ) ) {
-        calculationDisplayValue = calculator.evaluate(expression)
         expression.addEvaluation( calculator.evaluate(expression) )
-      } else {
-        calculationDisplayValue = expression.toString()
-      }  
-    
+      } 
+
+      expression.addInput(buttonValue)
+      calculationDisplayValue = expression.toString()
       calculationDisplay.textContent = calculationDisplayValue
   }
 }
@@ -195,7 +193,7 @@ function updateDisplay(buttonValue) {
 const keyPressHandler = event => {
   let buttonValue = event.key
  
-  event.preventDefault()
+  if (event.key === '/') event.preventDefault()
 
   updateDisplay(buttonValue)
 }
