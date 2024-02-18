@@ -1,3 +1,7 @@
+.placeholder {
+  background: rgb(255, 255, 255, 0.3);
+}
+
 html, body {
   height: 100vh;
   width: 100vw;
@@ -13,7 +17,7 @@ body {
 
 .calculator-body {
   background: #1B1A55;
-  width: 250px;
+  width: 350px;
   border-radius: 20px;
 }
 
@@ -21,12 +25,12 @@ body {
   font-family: 'Orbitron', sans-serif;
   background: #E5A5FF;
   border-radius: 20px;
-  width: 76%;
-  height: 60px;
+  width: 83%;
+  height: 100px;
   padding: 30px;
   text-align: right;
   overflow-wrap: anywhere;
-  font-size: 22px;
+  font-size: 35px;
   margin-bottom: 10px;
   box-shadow:  20px 20px 60px rgb(229, 165, 255, 0.5),
              -20px -20px 60px rgb(229, 165, 255, 0.5);
@@ -49,8 +53,8 @@ button {
   font-weight: bold;
   border: 0;
   margin: 0 3px;
-  width: 50px;
-  height: 50px;
+  width: 70px;
+  height: 70px;
   border-radius: 1px;
   background: #e0e0e0;
   box-shadow:  20px 20px 60px rgb(255, 255, 255, 0.3),

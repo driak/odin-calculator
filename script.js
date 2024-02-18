@@ -1,5 +1,5 @@
 function Calculator() {
-  this.operators = ['+', '-', '*', '/']
+  this.operators = ['+', '-', '*', "x", '/']
   this.snarkyMessage = "Say whuuut."
 
   this.isOperator = (string) => this.operators.includes(string)  
@@ -21,6 +21,7 @@ function Calculator() {
       case '-':
         return this.subtract(a, b)
       case '*':
+      case "x":
         return this.multiply(a, b)
       case '/':
         return this.divide(a, b)
