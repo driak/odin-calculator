@@ -177,7 +177,10 @@ function updateDisplay(buttonValue) {
       deleteLastCharacter()
       break
     default:
-      if ( isSnarkyMessage(calculationDisplayValue) ) clearDisplay() 
+      if ( isSnarkyMessage(calculationDisplayValue) ) { 
+        expression.clear()
+        clearDisplay()
+      } 
 
       if ( expression.isEvaluable
         && ( buttonValue === '='|| buttonValue === 'Enter' || calculator.isOperator(buttonValue) ) ) {
