@@ -140,7 +140,7 @@ let expression = new Expression()
 
 let buttonContainer = document.querySelector('.button-container')
 let calculationDisplay = document.querySelector('.calculation-display')
-let calculationDisplayValue = String(  calculationDisplay.value )
+let calculationDisplayValue = String(  calculationDisplay.textContent )
 let splitDisplayValue = calculationDisplayValue.split('')
 
 function isSnarkyMessage(displayValue) {
@@ -149,32 +149,30 @@ function isSnarkyMessage(displayValue) {
 
 function clearDisplay() {
   calculationDisplayValue = ''
-  calculationDisplay.value = calculationDisplayValue
+  calculationDisplay.textContent = calculationDisplayValue
 }
 
 function deleteLastCharacter() {
   expression.deleteLastInput( calculationDisplayValue.slice(-1) )
 
   calculationDisplayValue = calculationDisplayValue.slice(0, -1)
-  calculationDisplay.value = calculationDisplayValue
+  calculationDisplay.textContent = calculationDisplayValue
 }
 
 function isButtonTrigger(event) {
   return event.target.tagName.toLowerCase() === 'button'
 }
 
-const inputButtonValueHandler = event => { 
-  let button = event.target
-  let buttonValue = button.textContent
+function updateDisplay(buttonValue) {
 
-  if ( !isButtonTrigger(event) ) return 
-  
+  console.log(buttonValue)
+
   switch(buttonValue) {
-    case 'AC':
+    case 'AC', 'Delete':
       expression.clear()
       clearDisplay()
       break
-    case '⌫':
+    case '⌫', 'Backspace':
       deleteLastCharacter()
       break
     default:
@@ -183,16 +181,34 @@ const inputButtonValueHandler = event => {
       expression.addInput(buttonValue)
 
       if ( expression.isEvaluable
-        && ( buttonValue === '=' || calculator.isOperator(buttonValue) ) ) {
+        && ( buttonValue === '='|| buttonValue === 'Enter' || calculator.isOperator(buttonValue) ) ) {
         calculationDisplayValue = calculator.evaluate(expression)
         expression.addEvaluation( calculator.evaluate(expression) )
       } else {
         calculationDisplayValue = expression.toString()
       }  
     
-      calculationDisplay.value = calculationDisplayValue
+      calculationDisplay.textContent = calculationDisplayValue
   }
 }
 
+const keyPressHandler = event => {
+  let buttonValue = event.key
+ 
+  event.preventDefault()
+
+  updateDisplay(buttonValue)
+}
+
+const inputButtonValueHandler = event => { 
+  let button = event.target
+  let buttonValue = button.textContent
+
+  if ( !isButtonTrigger(event) ) return 
+  
+  updateDisplay(buttonValue)
+}
+
 buttonContainer.addEventListener('click', inputButtonValueHandler)
+document.addEventListener('keydown', keyPressHandler)
 
