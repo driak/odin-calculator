@@ -2,8 +2,10 @@ function Calculator() {
   this.operators = ['+', '-', '*', "x", '/']
   this.snarkyMessage = "Say whuuut."
 
-  this.isOperator = (string) => this.operators.includes(string)  
-  this.isMinusOperator = (string) => string === '-'
+  this.isOperator = string => this.operators.includes(string)  
+  this.isMinusOperator = string => string === '-'
+  this.isSnarkyMessage = displayValue => displayValue === this.snarkyMessage 
+  
   this.add = (a, b) => Number( a ) + Number( b )
   this.subtract = (a, b) => Number( a ) - Number( b )
   this.multiply = (a, b) => Number( a ) * Number( b )
@@ -95,6 +97,8 @@ function Expression(firstNumberSign = '+',
     return `${sign}${firstNumber}${operator}${secondNumber}`
   }
   this.addInput = input => {
+    if (input === ' ') return
+
     if ( !this.firstNumber && this.isSign(input) ) {
       this.firstNumberSign = input  
     } else if ( this.firstNumber && !this.operator
@@ -102,7 +106,7 @@ function Expression(firstNumberSign = '+',
       this.firstNumber = this.firstNumber + input 
     } else if (!this.operator
              && input === '.') {
-      let firstNumber = this.firstNumber ? this.firstNumber : ''
+      let firstNumber = this.firstNumber || ''
       if ( firstNumber.split('').filter( char => char === '.').length === 0 ) {
         this.firstNumber = String(firstNumber + input)
       }
@@ -146,10 +150,6 @@ let calculationDisplay = document.querySelector('.calculation-display')
 let calculationDisplayValue = String(  calculationDisplay.textContent )
 let splitDisplayValue = calculationDisplayValue.split('')
 
-function isSnarkyMessage(displayValue) {
-  return displayValue === calculator.snarkyMessage 
-}
-
 function clearDisplay() {
   calculationDisplayValue = ''
   calculationDisplay.textContent = calculationDisplayValue
@@ -162,29 +162,33 @@ function deleteLastCharacter() {
   calculationDisplay.textContent = calculationDisplayValue
 }
 
+function isEvaluationButton(buttonValue) {
+  return buttonValue === '='|| buttonValue === 'Enter' || calculator.isOperator(buttonValue) 
+}
+
 function isButtonTrigger(event) {
   return event.target.tagName.toLowerCase() === 'button'
+}
+
+function clearAll() {
+  expression.clear()
+  clearDisplay()
 }
 
 function updateDisplay(buttonValue) {
   switch(buttonValue) {
     case 'AC':
     case 'Delete':
-      expression.clear()
-      clearDisplay()
+      clearAll()
       break
     case '⌫':
     case 'Backspace':
       deleteLastCharacter()
       break
     default:
-      if ( isSnarkyMessage(calculationDisplayValue) ) { 
-        expression.clear()
-        clearDisplay()
-      } 
-
-      if ( expression.isEvaluable
-        && ( buttonValue === '='|| buttonValue === 'Enter' || calculator.isOperator(buttonValue) ) ) {
+      if ( calculator.isSnarkyMessage(calculationDisplayValue) ) clearAll()
+       
+      if ( expression.isEvaluable && isEvaluationButton(buttonValue) ) {
         expression.addEvaluation( calculator.evaluate(expression) )
       } 
 
