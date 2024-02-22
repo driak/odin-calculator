@@ -4,7 +4,8 @@ function Calculator() {
 
   this.isOperator = string => this.operators.includes(string)  
   this.isMinusOperator = string => string === '-'
-  this.isSnarkyMessage = displayValue => displayValue === this.snarkyMessage 
+  this.includesSnarkyMessage = displayValue => displayValue.includes( this.snarkyMessage )
+  
   
   this.add = (a, b) => Number( a ) + Number( b )
   this.subtract = (a, b) => Number( a ) - Number( b )
@@ -94,7 +95,7 @@ function Expression(firstNumberSign = '+',
     operator = this.operator || ''
     secondNumber = this.secondNumber || ''
 
-    return `${sign}${firstNumber}${operator}${secondNumber}`
+    return `${sign} ${firstNumber} ${operator} ${secondNumber}`
   }
   this.addInput = input => {
     if (input === ' ') return
@@ -107,6 +108,7 @@ function Expression(firstNumberSign = '+',
     } else if (!this.operator
              && input === '.') {
       let firstNumber = this.firstNumber || ''
+
       if ( firstNumber.split('').filter( char => char === '.').length === 0 ) {
         this.firstNumber = String(firstNumber + input)
       }
@@ -148,7 +150,6 @@ let expression = new Expression()
 let buttonContainer = document.querySelector('.button-container')
 let calculationDisplay = document.querySelector('.calculation-display')
 let calculationDisplayValue = String(  calculationDisplay.textContent )
-let splitDisplayValue = calculationDisplayValue.split('')
 
 function clearDisplay() {
   calculationDisplayValue = ''
@@ -175,6 +176,12 @@ function clearAll() {
   clearDisplay()
 }
 
+function sanitizeCalculatorDisplayValue() {
+  calculationDisplayValue = calculationDisplayValue.split('')
+                            .filter( char => char !== ' ' )
+                            .join('')
+}
+
 function updateDisplay(buttonValue) {
   switch(buttonValue) {
     case 'AC':
@@ -186,8 +193,13 @@ function updateDisplay(buttonValue) {
       deleteLastCharacter()
       break
     default:
-      if ( calculator.isSnarkyMessage(calculationDisplayValue) ) clearAll()
+
+      if ( calculator.includesSnarkyMessage(calculationDisplayValue) ) {
+        clearAll()
+      }
        
+      sanitizeCalculatorDisplayValue()
+
       if ( expression.isEvaluable && isEvaluationButton(buttonValue) ) {
         expression.addEvaluation( calculator.evaluate(expression) )
       } 
